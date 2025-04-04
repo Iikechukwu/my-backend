@@ -1,30 +1,27 @@
 require('dotenv').config();
 const express = require('express');
-const TelegramBot = require('node-telegram-bot-api');
+const cors = require('cors'); // Add this
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Initialize Telegram Bot (replace with your bot token from @BotFather)
-const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
+// ===== REMOVE ALL TELEGRAM BOT CODE =====
+// Delete TelegramBot initialization and all bot.on() handlers
+// Remove webhook route and setWebHook call
 
-// Express middleware to parse JSON
-app.use(express.json());
+// ===== NEW SETUP FOR MINI APP =====
+// Middleware
+app.use(cors()); // Enable CORS for Mini App requests
+app.use(express.json()); // Parse JSON bodies
+app.use(express.static('public')); // Serve React frontend
 
-// Telegram Bot Logic
-bot.on('message', (msg) => {
-  const chatId = msg.chat.id;
-  bot.sendMessage(chatId, `You said: "${msg.text}"`); // Echo back messages
+// Mini App API Endpoint
+app.post('/api/data', (req, res) => {
+  console.log('Data received from Mini App:', req.body);
+  // Add your business logic here
+  res.json({ status: 'success', data: req.body });
 });
 
-// Optional: Set up a webhook (alternative to polling)
-app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, (req, res) => {
-  bot.processUpdate(req.body);
-  res.sendStatus(200);
-});
-
-bot.setWebHook(`https://your-render-url.onrender.com/bot${process.env.TELEGRAM_BOT_TOKEN}`);
-
-// Start Express server (for other APIs/webhooks)
+// Start server
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

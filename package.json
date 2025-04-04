@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Iikechukwu/my-backend#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "node-telegram-bot-api": "^0.66.0"
